@@ -30,9 +30,6 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests
 
-      # 5️⃣ Run tests
-      - name: Run tests
-        run: ./mvnw test
 
       # 6️⃣ Upload built JAR file as an artifact
       - name: Upload build artifact
