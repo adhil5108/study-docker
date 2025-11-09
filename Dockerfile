@@ -1,15 +1,29 @@
-# Step 1: Use a base image with Java 17 (or whatever version your app uses)
-FROM eclipse-temurin:21-jdk
-
-
-# Step 2: Set working directory inside container
+# ===============================
+# 🏗️ Stage 1: Build the JAR
+# ===============================
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
-# Step 3: Copy the JAR file (built from Maven)
-COPY target/week-4-0.0.1-SNAPSHOT.jar app.jar
+# Copy Maven project files
+COPY pom.xml .
+COPY src ./src
 
-# Step 4: Expose the default Spring Boot port
+# If you have the Maven Wrapper, copy it too
+COPY mvnw .
+COPY .mvn .mvn
+
+# Run Maven inside the container
+RUN ./mvnw clean package -DskipTests
+
+# ===============================
+# 🚀 Stage 2: Run the JAR
+# ===============================
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+
+# Copy built jar from Stage 1
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
-
-# Step 5: Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
