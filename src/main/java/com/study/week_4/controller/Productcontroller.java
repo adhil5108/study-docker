@@ -19,6 +19,11 @@ public class Productcontroller {
         return productrepo.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Products getbyid(@PathVariable Long id ){
+        return productrepo.findById(id).orElseThrow();
+    }
+
     @PostMapping
     public Products post(@RequestBody Products product){
         return productrepo.save(product);
